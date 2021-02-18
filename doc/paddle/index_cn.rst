@@ -22,3 +22,5 @@
 
 
     faq/index_cn.rst
+    .. index::
+       single: hello

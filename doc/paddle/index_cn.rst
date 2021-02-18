@@ -15,6 +15,10 @@
     guides/index_cn.rst
     tutorial/index_cn.rst
     api/index_cn.rst
-    faq/index_cn.rst
     release_note_cn.md
 
+..  toctree::
+    :maxdepth: 2
+
+
+    faq/index_cn.rst

@@ -17,10 +17,21 @@ echo -n > ${TARGET_FILE}
 for f in ${FILES_ARRAY[@]} ; do
     echo -n > ${TMP_FILE}
     echo "downloading ${f} ..."
-    if [ "${https_proxy}" != "" ] ; then
-        curl -o ${TMP_FILE} -s -x ${https_proxy} ${f}
-    else
-        curl -o ${TMP_FILE} -s ${f}
+    curl_succ='false'
+    for i in 1 2 3 4 5 ; do
+      if [ "${https_proxy}" != "" ] ; then
+        STATUS_CODE=$(curl -o ${TMP_FILE} -sILk -w "%{http_code}" -x ${https_proxy} ${f})
+      else
+        STATUS_CODE=$(curl -o ${TMP_FILE} -sILk -w "%{http_code}" ${f})
+      fi
+      if [ "${STATUS_CODE}" = "200" ] ; then
+        curl_succ='true'
+        break
+      fi
+    done
+    if [ $curl_succ = 'false' ] ; then
+      echo "download ${f} failed. STATUS_CODE=${STATUS_CODE}"
+      #exit 1
     fi
     echo >> ${TMP_FILE}
     cat ${TMP_FILE} >> $TARGET_FILE
